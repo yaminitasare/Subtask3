@@ -1,22 +1,31 @@
-name: Specific word check workflow
+name: add_song_name_to_PR
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
 
 jobs:
-  password_check:
-    runs-on: windows-latest
+  add_song_name:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Check for a specific word
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Add Song Name
         run: |
-          dir "src/"| findstr "(word)" > nul && exit 1 || exit 0
-#specify the word which you want to check by entering it in above given space (word)
+          song_name="New Song Name"
+          echo "New Song: $song_name" >> $(githubworkspace)/song_names.txt
+          git add song_name.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHubAction"
+          git commit -m "Add new song: $song_name" -a
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
 
