@@ -1,0 +1,22 @@
+name: Specific word check workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  password_check:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check for a specific word
+        run: |
+          dir "src/"| findstr "(word)" > nul && exit 1 || exit 0
+#specify the word which you want to check by entering it in above given space (word)
+
+
+
